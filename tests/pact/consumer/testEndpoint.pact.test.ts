@@ -5,11 +5,11 @@ import { createClients } from '../clients';
 
 describe("consumer pact test - GET test endpoints", () => {
   describe("request GET on test endpoints", () => {
-    it("test02 returns { foo: 'bar' }", async () => {
+    it("test03 returns { foo: 'bar03' }", async () => {
       expect.assertions(1);
 
-      const endpointPath = "/test02";
-      const responseBody = { foo: "bar" };
+      const endpointPath = "/test03";
+      const responseBody = { foo: "bar03" };
 
       await mockProvider
         .uponReceiving(`a request to GET ${endpointPath}`)
@@ -23,7 +23,7 @@ describe("consumer pact test - GET test endpoints", () => {
         })
         .executeTest(async (mockService) => {
           const { client } = createClients(mockService.url);
-          const response = await client.getTest02();
+          const response = await client.getTest03();
 
           expect(response.data).toStrictEqual(responseBody);
         });
