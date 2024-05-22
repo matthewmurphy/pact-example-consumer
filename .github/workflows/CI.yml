@@ -1,0 +1,53 @@
+name: CI build
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: "npm"
+          node-version-file: ".nvmrc"
+
+      - name: NPM install
+        run: npm install
+
+      - name: Generate API client
+        run: npm run generate-client
+
+      - name: Pact - Run consumer tests
+        run: npm run pact:consumer
+
+      - name: Pact - Publish consumer pacts
+        run: npm run pact:publish-consumer
+        env:
+          BRANCH_NAME: ${{ github.ref }}
+          PACT_BROKER_URL: ${{ vars.PACT_BROKER_URL }}
+          PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+
+      - name: Pact - Can-i-deploy - Consumer
+        run: npm run pact:can-i-deploy-consumer
+        if: ${{ github.ref == 'refs/heads/main' }}
+        env:
+          BRANCH_NAME: ${{ github.ref }}
+          PACT_BROKER_URL: ${{ vars.PACT_BROKER_URL }}
+          PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+
+      - name: Pact - Record release - Consumer
+        run: npm run pact:release-consumer
+        if: ${{ github.ref == 'refs/heads/main' }}
+        env:
+          BRANCH_NAME: ${{ github.ref }}
+          PACT_BROKER_URL: ${{ vars.PACT_BROKER_URL }}
+          PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}

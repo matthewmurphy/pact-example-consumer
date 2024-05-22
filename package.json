@@ -1,0 +1,31 @@
+{
+    "name": "@mmurphy/pact-pact-example-consumer",
+    "version": "0.0.1",
+    "description": "",
+    "main": "index.js",
+    "keywords": [],
+    "author": "",
+    "license": "UNLICENSED",
+    "scripts": {
+        "generate-client": "bash ./scripts/generate-client.sh /local/spec/openapi.yaml",
+        "pact:consumer": "rm -rf ./tests/pact/gen/pacts && vitest run --config tests/pact/consumer/vitest.config.mts",
+        "pact:publish-consumer": "bash ./scripts/pact/publish-consumer-pact.sh",
+        "pact:can-i-deploy-consumer": "bash ./scripts/pact/can-i-deploy.sh pact-example-consumer",
+        "pact:release-consumer": "bash ./scripts/pact/record-release.sh pact-example-consumer"
+    },
+    "engines": {
+        "node": ">=20.0.0"
+    },
+    "devDependencies": {
+        "@pact-foundation/pact": "^12.3.0",
+        "@pact-foundation/pact-core": "^14.3.2",
+        "axios": "^1.6.7",
+        "ts-node": "^10.9.2",
+        "ts-node-dev": "^2.0.0",
+        "tsconfig-paths": "^4.2.0",
+        "typescript": "^5.3.3",
+        "vite-tsconfig-paths": "^4.3.1",
+        "vitest": "^1.4.0",
+        "vitest-when": "^0.3.1"
+    }
+}
